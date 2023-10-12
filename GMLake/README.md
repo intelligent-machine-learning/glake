@@ -63,16 +63,27 @@ To measure the memory fragmentation, we first calculate the memory utilization r
 
 ### Scalability on Memory-efficient Strategy
 To explore the scalability of GMLAKE in terms of memory efficient strategies, we conduct finetuning experiments on OPT-1.3B, Vicuna-13B, and GPT-NeoX-20B models using Deepspeed Zero3 with four NVIDIA A100 (80 GB) GPUs, all under a common batch size. Notably, our evaluation entails influential memory-efficient strategies, including LoRA, gradient-checkpointing (recomputation), and offload. Thus, we systematically employ combinations of these strategies during our assessment. We label the no strategy scenario as N, recomputation as R, recomputation coupled with LoRA as LR, recomputation with offload as RO, and the joint utilization of recomputation, LoRA, and offload as LRO. Complicated strategies lead to fragmentation. Figure illustrates the utilization ratio and reserved memory consumption. In a comprehensive overview, the increase in utilization ratio and reduction in reserved memory, when contrasted with PyTorch, ranges from approximately 5% to 29% (or is around 4 GB and up to 17 GB), respectively. 
+<div align="center">
+<img src="docs/figures/stra-opt-1.3b.png" alt="Editor" width="300"><img src="docs/figures/stra-vicuna-13b.png" alt="Editor" width="300"><img src="docs/figures/stra-neox-20b.png" alt="Editor" width="300">
+</div>
 
 ### Scalability on GPU Scale-out
 Employing LR strategies along with the Deepspeed platform, we proceed to evaluate GMLAKE’s scalability in the context of GPU scale-out. This evaluation entails scaling from 1 GPU to 16 GPUs incrementally. As depicted in Figure , GMLAKE consistently exhibits lower fragmentation ratios (high utilization ratio) and reserved memory consumption. Particularly noteworthy is the case of GPT-NeoX-20B in Figure , where the utilization ratio and reserved memory reduction can be as substantial as 23% or 17 GB, respectively. Moreover, the trend becomes evident that, as the number of GPUs increases, GMLAKE effectively maintains a utilization ratio of approximately 90% (i.e., fragmentation ratio less than 10%).
-
+<div align="center">
+<img src="docs/figures/scale-opt-13b.png" alt="Editor" width="300"><img src="docs/figures/scale-vicuna-13b.png" alt="Editor" width="300"><img src="docs/figures/scale-neox-20b.png" alt="Editor" width="300">
+</div>
 
 ### Scalability on Various Platforms
 We utilize various platforms including Deepspeed, FSDP, and Colossal-AI to conduct finetuning on the OPT-13B, GLM-10B, and GPT-2 models, respectively. This process employs static optimizing strategies, specifically LoRA and recomputation, and involves the use of four NVIDIA A100 (80 GB) GPUs. As illustrated in Figure , the results demonstrate a noteworthy decrease in both fragmentation and reserved memory, with reductions ranging from approximately 10% to 30%, and from 7 GB to 25 GB, respectively. These results confirm the high scalability exhibited by GMLAKE on various optimized training platforms.
+<div align="center">
+<img src="docs/figures/platforms.png" alt="Editor" width="300">
+</div>
 
 ### End-to-End Effectiveness of GMLAKE
 In this study, we conduct a comparative analysis between GMLAKE and the PyTorch caching allocator through end-to-end fine-tuning of LLMs, utilizing varying batch sizes. This evaluation uses four A100 GPUs and enables LoRA, recomputation, and Zero3 optimizations on both frameworks. Figure shows that GMLAKE consistently demonstrates a substantial reduction in peak memory consumption across a range of model sizes from 1.3 to 20 billion parameters. Notably, this memory consumption mitigation exhibits scalability with increasing model sizes while maintaining a consistent batch size. The efficacy of memory usage is also demonstrated by the trends presented in Figure . Significantly enhanced performance is evident in comparison to the baseline. Notably, as the model size increases, memory efficiency reaches levels exceeding 95% (as seen with the 13 billion and 20 billion parameter models), indicating minimal fragmentation and waste.
+<div align="center">
+<img src="docs/figures/batch-opt-1.3b.png" alt="Editor" width="300"><img src="docs/figures/batch-opt-13b.png" alt="Editor" width="300"><img src="docs/figures/batch-neox-20b.png" alt="Editor" width="300">
+</div>
 
 This starkly contrasts the baseline approach, which struggles to achieve an 80% efficiency rate. Furthermore, we quantify the overhead of defragmentation logic overhead using the end-to-end throughput. Figure  bottom shows that GMLAKE effectively maintains comparable throughput to the baseline approach. Interestingly, in scenarios involving exceedingly large batch sizes, GMLAKE exhibits the potential to achieve even higher throughput than the PyTorch baseline due to its adept memory management and reduced frequency of (de)allocation operations.
 
