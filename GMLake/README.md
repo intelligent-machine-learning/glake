@@ -10,7 +10,9 @@ Deep learning (DL) frameworks, e.g., PyTorch and TensorFlow, have emerged as the
 On the other side, the rapid growth in the memory requirements of large-scale DNN models has sparked the development of methods at the system- and algorithm-level to alleviate memory demands. Examples for these methods include recomputation, offloading, distributed training and low-rank adaptation. Even though these optimizations can effectively reduce memory footprint for training or fine-tuning large-scale DNN models, they may sometimes lead to poor memory utilization. The reason is that they also introduce a significant amount of regularity and dynamicity in the memory allocation requests, which results in up to 30% GPU memory fragmentation.
 
 To mitigate GPU memory fragmentation and improve efficient memory utilization, this study focuses on exploring the causes of GPU memory fragmentation and proposes a novel memory allocation framework based on low-level GPU virtual memory management, called ***GPU memory lake (GMLake)***, to optimize GPU memory management with low overhead.
-![image]()
+<div align="center">
+<img src="docs/figures/GMLake.png" alt="Editor" width="500">
+</div>
 
 ## Capabilities
 GMLake employs a novel virtual ***memory stitching (VMS) mechanism***, which is seemingly a reverse behavior to the splitting.
@@ -54,7 +56,7 @@ export defragLevel=0
 
 ## Documentation and Tutorial
 For more about environment variables and best tutorial, you can vist:
-* *[GMLake best tutorial documents](https://code.alipay.com/george.zr/GLake-open/blob/master/GMLake/docs/GMLake-tutorial.md)*
+* *[GMLake best tutorial documents](docs/GMLake-tutorial.md)*
 
 ## Training Performence Evaluation
 To measure the memory fragmentation, we first calculate the memory utilization ratio, which equals peak active memory divided by peak reserved memory. The fragmentation ratio equals (1−utilization ratio). The term “active memory” refers to the cumulative memory occupied by all active blocks, currently allocated by high-level tensors and utilized within DNN computations. On the other hand, “reserved memory” pertains to the total memory allocation set aside by both PyTorch and GMLAKE. These metrics are recorded at their respective peak values. While the reserved memory typically stabilizes as the training process runs, fluctuations in active memory are more substantial due to tensor (de)allocations during model execution. Given the caching mechanism, the peak active memory is pertinent for utilization or fragmentation analysis.
