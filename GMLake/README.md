@@ -64,13 +64,13 @@ To measure the memory fragmentation, we first calculate the memory utilization r
 ### Scalability on Memory-efficient Strategy
 To explore the scalability of GMLAKE in terms of memory efficient strategies, we conduct finetuning experiments on OPT-1.3B, Vicuna-13B, and GPT-NeoX-20B models using Deepspeed Zero3 with four NVIDIA A100 (80 GB) GPUs, all under a common batch size. Notably, our evaluation entails influential memory-efficient strategies, including LoRA, gradient-checkpointing (recomputation), and offload. Thus, we systematically employ combinations of these strategies during our assessment. We label the no strategy scenario as N, recomputation as R, recomputation coupled with LoRA as LR, recomputation with offload as RO, and the joint utilization of recomputation, LoRA, and offload as LRO. Complicated strategies lead to fragmentation. Figure illustrates the utilization ratio and reserved memory consumption. In a comprehensive overview, the increase in utilization ratio and reduction in reserved memory, when contrasted with PyTorch, ranges from approximately 5% to 29% (or is around 4 GB and up to 17 GB), respectively. 
 <div align="center">
-<img src="docs/figures/stra-opt-1.3b.png" alt="Editor" width="300"><img src="docs/figures/stra-vicuna-13b.png" alt="Editor" width="300"><img src="docs/figures/stra-neox-20b.png" alt="Editor" width="300">
+<img src="docs/figures/stra-opt-1.3b.png" alt="Editor" width="300" high="200"><img src="docs/figures/stra-vicuna-13b.png" alt="Editor" width="300" high="200"><img src="docs/figures/stra-neox-20b.png" alt="Editor" width="300" high="200">
 </div>
 
 ### Scalability on GPU Scale-out
 Employing LR strategies along with the Deepspeed platform, we proceed to evaluate GMLAKE’s scalability in the context of GPU scale-out. This evaluation entails scaling from 1 GPU to 16 GPUs incrementally. As depicted in Figure , GMLAKE consistently exhibits lower fragmentation ratios (high utilization ratio) and reserved memory consumption. Particularly noteworthy is the case of GPT-NeoX-20B in Figure , where the utilization ratio and reserved memory reduction can be as substantial as 23% or 17 GB, respectively. Moreover, the trend becomes evident that, as the number of GPUs increases, GMLAKE effectively maintains a utilization ratio of approximately 90% (i.e., fragmentation ratio less than 10%).
 <div align="center">
-<img src="docs/figures/scale-opt-13b.png" alt="Editor" width="300"><img src="docs/figures/scale-vicuna-13b.png" alt="Editor" width="300"><img src="docs/figures/scale-neox-20b.png" alt="Editor" width="300">
+<img src="docs/figures/scale-opt-13b.png" alt="Editor" width="300" high="200"><img src="docs/figures/scale-vicuna-13b.png" alt="Editor" width="300" high="200"><img src="docs/figures/scale-neox-20b.png" alt="Editor" width="300" high="200">
 </div>
 
 ### Scalability on Various Platforms
