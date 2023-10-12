@@ -2712,21 +2712,21 @@ class DeviceCachingAllocator {
     static const size_t fragment_limit = ([]()->size_t{
         const char* env = getenv("fragLimit");
         if(env) return (size_t)std::stoll(env);
-        else return (size_t)(32*1024*1024);
+        else return (size_t)(512*1024*1024);
     })();
     
     
     static const int defragment_level = ([]()->int{
         const char* env = getenv("defragLevel");
         if(env) return (int)std::atoi(env);
-        else return (int)1;
+        else return (int)0;
     })();
     
     
     static const int auto_gc_limits = ([]()->int{
         const char* env = getenv("autoGC");
         if(env) return (int)std::atoi(env);
-        else return (int)80;
+        else return (int)1000;
     })();
     
     
