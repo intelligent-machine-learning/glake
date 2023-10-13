@@ -20,8 +20,7 @@ As Multi-path hooks CUDA driver API (e.g., `cuMemcpyHtoDAsync`), it is not neede
 ## Run benchmark
 ```bash
 $ cd test
-# Note sudo permission is required.
-$ make bench
+$ sudo make bench
 ```
 
 ## Preliminary Result

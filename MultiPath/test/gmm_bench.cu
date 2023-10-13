@@ -29,8 +29,8 @@ static int verify_data(void *const &to_verify, void *const &truth, size_t bytes,
   } else if (truth_at_cpu && !to_verify_at_gpu) {
     char *d2 = (char *)to_verify;
     char *d1 = (char *)truth;
-    printf("%s to_verify: %d %d, truth: %d %d\n", __func__, d2[0],
-           d2[bytes - 1], d1[0], d1[bytes - 1]);
+    //printf("%s to_verify: %d %d, truth: %d %d\n", __func__, d2[0],
+    //       d2[bytes - 1], d1[0], d1[bytes - 1]);
     if (((char *)to_verify)[0] == 0) {
       printf("%s Value should not be 0", __func__);
       return -1;
