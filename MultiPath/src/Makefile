@@ -36,7 +36,7 @@ libcuda.so.1:gmm_multipath_impl.cu gmm_common_impl.o gmm_client_cfg.o gmm_client
 	g++ -c -o $@ $^ -fPIC ${FLAGS}
 
 format:
-	clang-format-11 -i *.cu *.cpp ../include/*.h --style=google
+	clang-format-11 -i *.cu *.cpp *.h --style=google
 
 clean:
 	rm -f *.o ../bin/libcuda.so.1 ../bin/libcuda.so
