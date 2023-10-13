@@ -45,7 +45,7 @@ GLake is designed with a layered architecture:
 - **Multi-path** CPU-GPU IO throughput is improved by exploiting multiple transfer paths concurrently.
 
 <div align="center">
-<img src="docs/figures/multi_path_view.png" alt="Editor" width="600">
+<img src="docs/figures/multi_path_view.png" alt="Editor" width="700">
 </div>
 
 - **Data deduplication** For AI inference, GLake is able to automatically find out duplicate memory use and share them between processes in fine-grained memory.
