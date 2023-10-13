@@ -14,13 +14,13 @@ $ cd -; make
 ```
 
 ## Usage
-As MultiPath hooks CUDA driver API (e.g., cuMemcpyHtoDAsync), it is not needed to modify code. Rather, use environment variable GLAKE_MULTI_PATH=1 to turn on Multi-path.
+As Multi-path hooks CUDA driver API (e.g., `cuMemcpyHtoDAsync`), it is not needed to modify your code. Rather, use environment variable `GLAKE_MULTI_PATH=1` to turn on Multi-path.
 
 ## Run benchmark
 ```bash
-$ cd ../test
+$ cd test
 $ make bench
 ```
 
 ## Preliminary Result
-We got bandwidth 83.1 GB/s for HostToDevice and 71.2 GB/s for DeviceToHost on a node of 8 * A100(80GB) connected with NvLink.
+We got bandwidth 83.1 GB/s for HostToDevice and 71.2 GB/s for DeviceToHost on a node of 8 * A100(80GB), where GPUs are connected with NvLink and four PCIe paths are located between CPU-GPU.
