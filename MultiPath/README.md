@@ -5,6 +5,7 @@ CPU-GPU is connected with PCIe. Due to the limited PCIe bandwidth (~24GB/s for g
 GLake Multi-path speeds up CPU-GPU IO by exploiting NvLink and multiple PCIe paths on the same node.
 
 ## Build
+Make sure CUDA (version>=11.6) is installed in `/usr/local/cuda`.
 ```bash
 $ cd src
 $ wget https://github.com/NVIDIA/gdrcopy/archive/refs/tags/v2.4.tar.gz
@@ -19,6 +20,7 @@ As Multi-path hooks CUDA driver API (e.g., `cuMemcpyHtoDAsync`), it is not neede
 ## Run benchmark
 ```bash
 $ cd test
+# Note sudo permission is required.
 $ make bench
 ```
 

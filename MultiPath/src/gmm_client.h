@@ -390,7 +390,7 @@ class gmm_client_ctx {
     }
     // gtrace();
     LOGGER(WARN, "Faield to find dev shmInfo for dptr:%llx", dptr);
-    printf("--Fail %s dptr:%p\n", __func__, dptr);
+    //printf("--Fail %s dptr:%p\n", __func__, dptr);
     return 1;
   }
 

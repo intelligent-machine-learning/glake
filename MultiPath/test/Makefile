@@ -2,10 +2,10 @@
 all: gmm_test gmm_bench
 
 gmm_test: gmm_test.cu
-	nvcc -o $@ $^ -g -I../include -L../bin -lcuda
+	nvcc -o $@ $^ -g -I../src -L../bin -lcuda
 
 gmm_bench: gmm_bench.cu
-	nvcc -o $@ $^ -g -I../include -L../bin -lcuda
+	nvcc -o $@ $^ -g -I../src -L../bin -lcuda
 
 bench: gmm_bench
 	rm -f /tmp/gmm*
