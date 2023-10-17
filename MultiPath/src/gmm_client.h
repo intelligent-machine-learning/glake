@@ -355,7 +355,7 @@ class gmm_client_ctx {
       }
     }
     // gtrace();
-    LOGGER(WARN, "Faield to find dev shmInfo for dptr:%llx", ptr);
+    LOGGER(WARN, "Faield to find dev shmInfo for dptr:%p", ptr);
     // printf("--Fail %s dptr:%p\n", __func__, ptr);
 #if 0
     auto it = shm_baseAddr_set.lower_bound(ptr);
