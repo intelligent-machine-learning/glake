@@ -12,7 +12,7 @@ AI large model training and inference are increasingly confronted with the chall
 GLake is designed with a layered architecture:
 
 <div align="center">
-<img src="docs/figures/glake_arch_cn.png" alt="Editor" width="600">
+<img src="docs/figures/glake_arch_en.png" alt="Editor" width="600">
 </div>
 
 - **Hardware interface** includes GPUs and interconnection, currently mainly based on NV GPU (supporting NVLink, P2P, Unified Addressing, VMM, IPC, etc.). The interface is adapting to support domestic AI cards, and will consider supporting new interconnections (such as CXL) in the future.
