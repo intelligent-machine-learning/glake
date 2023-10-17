@@ -34,8 +34,8 @@ GLake总体架构如下图所示，基于分层设计：
 3. 加速CPU-GPU数据传输，传输性能提升3X+。
    
 ## 使用用例
-[GMLake tutorial](GMLake/GMLake-tutorial.md)
-[Multi-path tutorial](multi_path/README.md)
+[GMLake tutorial](../GMLake/README.md)
+[Multi-path tutorial](../MultiPath/README.md)
 
 ## 工作原理
 - **GMLake** 当没有整块空闲显存满足申请请求时，GMLake会把空闲碎片拼接成一块地址连续的显存返回给用户。
