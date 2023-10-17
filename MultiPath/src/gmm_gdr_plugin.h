@@ -1,5 +1,6 @@
 #pragma once
 
+#include <stdio.h>
 #include <cuda.h>
 #include <gdrapi.h>
 #include <stdarg.h>
