@@ -23,7 +23,7 @@
 
 按照如下命令拉取并启动docker镜像
 ```
-sudo docker run -td --net=host --ipc=host -e NVIDIA_VISIBLE_DEVICES=all -e NVIDIA_DRIVER_CAPABILITIES=all reg.docker.alibaba-inc.com/george/glake-release:v1.2
+sudo docker run -td --net=host --ipc=host -e NVIDIA_VISIBLE_DEVICES=all -e NVIDIA_DRIVER_CAPABILITIES=all easydl/glake
 ```
 进入镜像中
 ```
