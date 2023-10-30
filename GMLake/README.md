@@ -1,8 +1,6 @@
 # GMLake: Efficient and Transparent GPU Memory Defragmentation for Large-scale DNN Training
 A easy, efficient, transparent and open AI framework plugin for enabling end-to-end model tarining and inference at all scales.
 
-## Latest News
-* [2023/9] *[GMLake: Efficient and Transparent GPU Memory Defragmentation for Large-scale DNN Training]()*
 
 ## What is GMLake
 Deep learning (DL) frameworks, e.g., PyTorch and TensorFlow, have emerged as the fundamental infrastructure for DNN models due to its flexibility and computational efficiency. Those DL frameworks have enabled the training of increasingly large and complex neural network models. Meanwhile, the GPU architecture have become the most widely used hardware platform to support the high-performance execution of DNN models. On the other side, the growing scale and complexity of DNN models poses new challenges to GPU memory management. For instance, using the CUDA’s native memory allocation APIs like cudaMalloc and cudaFree incurs a large overhead. To improve the efficiency of GPU memory allocation, DL frameworks opt to implement a caching allocator that maintains a memory pool with the best fit with coalescing (BFC) algorithm. Our experimental results show that the caching allocator outperforms the native memory allocator by almost 10×.
