@@ -41,7 +41,7 @@ TORCH_CUDA_ARCH_LIST="8.0" USE_CUDA=1 python setup.py install
 ## Docker Image
 Using pre-built images. You can alse pull a pre-built docker images from Docker Hub and run with docker
 ```
-sudo docker run -td --net=host --ipc=host -e NVIDIA_VISIBLE_DEVICES=all -e NVIDIA_DRIVER_CAPABILITIES=all easydl/glake
+sudo docker run -td --net=host --ipc=host -e NVIDIA_VISIBLE_DEVICES=all -e NVIDIA_DRIVER_CAPABILITIES=all easydl/glake:v1
 ```
 
 ## Quick Start
