@@ -16,7 +16,7 @@ To use GLake, the simplest way is to replace the underlying library (e.g., libcu
 - **GPU memory bottleneck** GPUs are known for their high computing power and high concurrency. As a peripheral, however, its memory capacity (currently 80GB for mainstream training GPUs A100 and 24GB for mainstream inference GPUs A10) still restricts the use of its computing power. Especially recently, the growing demand for GPU memory capacity for large models has been much higher than the hardware development of GPU memory.
 - **IO transmission bottleneck** Comparing the GPU computing power and CPU-GPU IO bandwidth of various GPU generations, it is not difficult to find that the limitations of transmission wall are intensifying and will be unlikely to be solved in the short term. It is worth noting that based on the customized interconnection NVLink, the GPU-to-GPU bandwidth is significantly faster than the PCIe bandwidth. In addition, GPU memory bandwidth (HBM, GDDR) is a performance bottleneck of large model inference.
 ### Architecture
-GLake is designed with a layered architecture, currently tests and verfications focus on PyTorch and NVIDIA GPUs:
+GLake is designed with a layered architecture. Currently tests and verfications focus on PyTorch and NVIDIA GPUs, we're working on more devices support:
 
 <div align="center">
 <img src="docs/figures/glake_arch_en.png" alt="Editor" width="700">
@@ -30,7 +30,7 @@ GLake is designed with a layered architecture, currently tests and verfications 
 
 ### Features
 - **Efficient**: With internal two-layer GPU memory management and global (multi-GPU, multi-task) optimization, GPU memory pooling, sharing and tiering are realized to provide larger GPU memory for training and inference. Multi-path can accelerate CPU-GPU transmission by 3~12X.
-- **Easy to use**: The core functions are transparent to the model and do not require code modification for training and inference, as GLake can be easily plugged into existing engines (such as PyTorch).
+- **Easy to use**: The core functions are transparent to the model and do not require code modification for training and inference, as GLake can be easily plugged into existing engines (such as PyTorch). Meanwhile GPU memory internal stats. (e.g., fragmentation) can be queried online with RPC interface 
 - **Open and easy to extend**: Configurable strategies (e.g., compression, data verification, different levels of security check) will be provided.
 - **Security**: For troubleshooting problems such as GPU memory out-of-bounds, a built-in GPU memory out-of-bounds detection mechanism will assist in diagnose.
 ### Quick Results
@@ -64,11 +64,12 @@ GLake is designed with a layered architecture, currently tests and verfications 
 ## Roadmap
 We are planning and working on a few interesting featues listed as below. Any questions, suggestions and participations are welcomed. 
 - **LLM KV cache** : tackle LLM inference KV cache fragmentation in a unifed and efficient way (a little different from vLLM) 
-- **cache-prefetch**: optimize offloading and prefetching in fine-tuning and inference (i.e., atop DeepSpeed)  
+- **cache-prefetch**: optimize offloading & prefetching in fine-tuning and inference (i.e., atop DeepSpeed, may deep into L2 cache)  
 - **tiering**: manage and optimize memory allocations and data moving across cards/nodes and various memory types 
-- **data deduplication**: keep single unique content copy in fine-grained block across model instances and processes in inference or serveless 
+- **data deduplication**: keep single unique content copy in fine-grained block across model instances and processes in inference or serverless 
 - **memory debugging**: enable more efficient and friendly GPU memory debugging in case of overflow, segmentfault etc
 - **more accelerators**: okey, we'll (have to) need more choices
+- **more scenarios**: such as GNN、GraphDB etc
 
 ## Community
 WeChat: TBD
