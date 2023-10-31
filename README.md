@@ -6,14 +6,17 @@
 ## Introduction
 AI large model training and inference are increasingly confronted with the challenges of memory wall and IO transmission wall, that is, the growth of GPU memory capacity and IO bandwidth cannot keep up with the growth rate of AI model size. 
 
-To address these challenges, GLake is an acceleration library and relevant utilites that work at the bottom layer (GPU virtual and physical memory management) and system layer (multi-GPU, multi-path, and multi-tasking) to optimize GPU memory and IO. GLake enables AI trainging, inference (including converting large models to TensorRT or ONNX Runtime on NVIDIA A10/3090) and DevOps (like Notebook) to fully utilize the underlying hardware resources, improving training throughput by up to 4 times, saving inference memory by up to 3 times, and accelerating IO transmission by 3~12 times. 
+To address these challenges, GLake is an acceleration library and relevant utilites that work at the bottom layer (GPU virtual and physical memory management) and system layer (multi-GPU, multi-path, and multi-tasking) to optimize GPU memory and IO. 
+
+GLake enables AI trainging, inference (including converting large models to TensorRT or ONNX Runtime on NVIDIA A10/3090) and DevOps (like Notebook) to fully utilize the underlying hardware resources, improving training throughput by up to 4 times, saving inference memory by up to 3 times, and accelerating IO transmission by 3~12 times. 
 
 To use GLake, the simplest way is to replace the underlying library (e.g., libcuda.so or PyTorch libc10_cuda.so) without any user code modification, though more graceful way is to follow the detailed steps.
+
 ### Motivation
 - **GPU memory bottleneck** GPUs are known for their high computing power and high concurrency. As a peripheral, however, its memory capacity (currently 80GB for mainstream training GPUs A100 and 24GB for mainstream inference GPUs A10) still restricts the use of its computing power. Especially recently, the growing demand for GPU memory capacity for large models has been much higher than the hardware development of GPU memory.
 - **IO transmission bottleneck** Comparing the GPU computing power and CPU-GPU IO bandwidth of various GPU generations, it is not difficult to find that the limitations of transmission wall are intensifying and will be unlikely to be solved in the short term. It is worth noting that based on the customized interconnection NVLink, the GPU-to-GPU bandwidth is significantly faster than the PCIe bandwidth. In addition, GPU memory bandwidth (HBM, GDDR) is a performance bottleneck of large model inference.
 ### Architecture
-GLake is designed with a layered architecture:
+GLake is designed with a layered architecture, currently tests and verfications focus on PyTorch and NVIDIA GPUs:
 
 <div align="center">
 <img src="docs/figures/glake_arch_en.png" alt="Editor" width="700">
@@ -59,7 +62,14 @@ GLake is designed with a layered architecture:
 </div>
 
 ## Roadmap
-We will release code including LLM KV cache, cache-prefetch, tiering, and data deduplication in the following months.
+We are planning and working on a few interesting featues listed as below. Any questions, suggestions and participations are welcomed. 
+- **LLM KV cache** : tackle LLM inference KV cache fragmentation in a unifed and efficient way (a little different from vLLM) 
+- **cache-prefetch**: optimize offloading and prefetching in fine-tuning and inference (i.e., atop DeepSpeed)  
+- **tiering**: manage and optimize memory allocations and data moving across cards/nodes and various memory types 
+- **data deduplication**: keep single unique content copy in fine-grained block across model instances and processes in inference or serveless 
+- **memory debugging**: enable more efficient and friendly GPU memory debugging in case of overflow, segmentfault etc
+- **more accelerators**: okey, we'll (have to) need more choices
 
 ## Community
-Wechat, Dingding
+WeChat
+Dingding
