@@ -71,5 +71,6 @@ We are planning and working on a few interesting featues listed as below. Any qu
 - **more accelerators**: okey, we'll (have to) need more choices
 
 ## Community
-WeChat
-Dingding
+WeChat: TBD
+
+Dingding: TBD
