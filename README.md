@@ -62,12 +62,12 @@ GLake is designed with a layered architecture. Currently tests and verfications 
 </div>
 
 ## Roadmap
-We are planning and working on a few interesting featues listed as below. Any questions, suggestions and participations are welcomed. 
+We are working on a few interesting featues. Any questions, suggestions and participations are welcomed. 
 - **LLM KV cache** : tackle LLM inference KV cache fragmentation in a unifed and efficient way (a little different from vLLM) 
 - **cache-prefetch**: optimize offloading & prefetching in fine-tuning and inference (i.e., atop DeepSpeed, may deep into L2 cache)  
 - **tiering**: manage and optimize memory allocations and data moving across cards/nodes and various memory types 
 - **data deduplication**: keep single unique content copy in fine-grained block across model instances and processes in inference or serverless 
-- **memory debugging**: enable more efficient and friendly GPU memory debugging in case of overflow, segmentfault etc
+- **memory debugging**: enable efficient and friendly GPU memory debugging in case of overflow, segmentfault etc
 - **more accelerators**: okey, we'll (have to) need more choices
 - **more scenarios**: such as GNN、GraphDB etc
 
