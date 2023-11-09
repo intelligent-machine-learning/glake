@@ -40,8 +40,8 @@ GLake is designed with a layered architecture. Currently tests and verfications 
 
 
 ## Examples
-[GMLake tutorial](GMLake/GMLake-tutorial.md)
-[Multi-path tutorial](multi_path/README.md)
+[GMLake tutorial](GMLake/docs/GMLake-tutorial.md)\
+[Multi-path tutorial](MultiPath/README.md)
 ## How it works
 - **GMLake** When there is no contineous free buffer to satisfy allocation requests, GMLake will return a complete buffer to users by combining multiple memory fragementation.
 
