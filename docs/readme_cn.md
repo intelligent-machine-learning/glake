@@ -1,7 +1,7 @@
 # GLake：GPU显存与传输优化
 
 ## 最新消息
-文章Link
+- 论文 GMLake: Efficient and Transparent GPU Memory Defragmentation for Large-scale DNN Training with Virtual Memory Stitching, 已被 **ASPLOS24** 接收，全文即将公布
 
 ## 简介
 AI大模型训练与推理面临越来越严重的“显存墙”与“传输墙”问题，即显存容量与传输带宽赶不上模型大小增长速度，亟需更多优化方案。
