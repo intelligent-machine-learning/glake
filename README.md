@@ -1,7 +1,7 @@
 ## GLake: optimizing GPU memory management and IO transmission
 [中文](docs/readme_cn.md)
 ## Latest News
-- Our paper: GMLake: Efficient and Transparent GPU Memory Defragmentation for Large-scale DNN Training with Virtual Memory Stitching (to public soon), just accepted by **ASPLOS24**
+- [2023.11.10] Our paper: GMLake: Efficient and Transparent GPU Memory Defragmentation for Large-scale DNN Training with Virtual Memory Stitching (to public soon), just accepted by **ASPLOS24**
 - [Blog](docs/readme_cn.md)
 
 ## Introduction
