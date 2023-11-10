@@ -1,7 +1,8 @@
 ## GLake: optimizing GPU memory management and IO transmission
 [中文](docs/readme_cn.md)
 ## Latest News
-[Blog](docs/readme_cn.md)
+- Our paper: GMLake: Efficient and Transparent GPU Memory Defragmentation for Large-scale DNN Training with Virtual Memory Stitching (to public soon), just accepted by **ASPLOS24**
+- [Blog](docs/readme_cn.md)
 
 ## Introduction
 AI large model training and inference are increasingly confronted with the challenges of memory wall and IO transmission wall, that is, the growth of GPU memory capacity and IO bandwidth cannot keep up with the growth rate of AI model size. 
