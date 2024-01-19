@@ -152,6 +152,7 @@ gmm_client_ctx::gmm_client_ctx(gmm_client_cfg *&client_cfg_) {
   uuid = 0;
   int cur_dev = 0;
   gmm_state status = GMM_STATE_INIT;
+  gdr_handle = {};
 
   CHECK_CUDA(cudaGetDevice(&cur_dev));
   CHECK_CUDA(cudaGetDeviceCount(&dev_cnt));
