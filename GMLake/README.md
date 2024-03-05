@@ -25,7 +25,7 @@ A summary of GMLake includes:
 ### On Linux
 We have adapted GMLAKE to different versions of PyTorch, such as PyTorch-1.13.1, PyTorch-2.0, and pre-release PyTorch-2.1. The repository is the GMLake with PyTorch2.0. 
 ```
-git clone -b release/2.0 https://github.com/pytorch/pytorch
+git clone -b release/1.13 https://github.com/pytorch/pytorch
 cd pytorch
 git submodule sync
 git submodule update --init --recursive

@@ -10,6 +10,7 @@
 // WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 // See the License for the specific language governing permissions and
 // limitations under the License.
+
 #pragma once
 
 #include <typeindex>
@@ -24,11 +25,7 @@
 #include <sstream>
 #include <vector>
 #include <execinfo.h>
-#include <stdlib.h>
-#include <stdarg.h>
-#include <unistd.h>
-#include <sys/syscall.h>
-#include <stdio.h>
+
 
 
 #include <c10/util/intrusive_ptr.h>
@@ -37,18 +34,17 @@
 
 typedef unsigned long long CUmemGenericAllocationHandle;
 
-extern int gmlakeInfoLevel = -1;
-typedef enum {GMLAKE_LOG_NONE=0, GMLAKE_LOG_INFO=1} gmlakeInfoLogLevel;
-pthread_mutex_t gmlakeInfoLock = PTHREAD_MUTEX_INITIALIZER;
-FILE* gmlakeInfoFile = stdout;
 
-void gmlakeInfoLog(const char* filefunc, int line, const char* format, ...);
 
-#define GMLAKE_INFO(...) \
-	do { \
-       gmlakeInfoLog(__func__, __LINE__, __VA_ARGS__); \
-	}while(0);
-#define gettid() (pid_t) syscall(SYS_gettid)
+#ifndef LOGD
+#ifdef DEBUG_
+#define LOGD(format, ...) fprintf(stdout, "Debug:%s() L-%d:" format "\n", __FUNCTION__, __LINE__, ##__VA_ARGS__);fflush(stdout);
+#else
+#define LOGD(format, ...) 
+#endif
+#endif
+
+
 
 
 #define gtrace()  { \
@@ -60,28 +56,37 @@ void gmlakeInfoLog(const char* filefunc, int line, const char* format, ...);
     } \
     printf("------------------\n"); \
     int i = 0;for (i = 0; i < size; i++) { \
-        printf("[bt] #%d %s symbol:%p \n", i, msgs[i], traces[i]); \
-        /* char syscom[256]; sprintf(syscom,"addr2line %p -e /tmp/binomialOptions_kernel", traces[i]); system(syscom);*/ \
-        fflush(stdout);\
+      printf("[bt] #%d %s symbol:%p \n", i, msgs[i], traces[i]); \
+      /* char syscom[256]; sprintf(syscom,"addr2line %p -e /tmp/binomialOptions_kernel", traces[i]); system(syscom);*/ \
+      fflush(stdout);\
     } \
     printf("------------------\n"); \
     free (msgs); \
     msgs = NULL; \
 }
 
+
+
+
+
 #define LOGE(format, ...) fprintf(stdout, "L%d:" format "\n", __LINE__, ##__VA_ARGS__); fflush(stdout);
 #define ASSERT(cond, ...) { if(!(cond)) { LOGE(__VA_ARGS__); assert(0); } }
 #define WARN(cond, ...) { if(!(cond)) { LOGE(__VA_ARGS__); } } 
 
+
+
+
+
+
 #define DRV_CALL(call)                                                                                  \
     {                                                                                                   \
-        CUresult result = (call);                                                                      \
-        if (CUDA_SUCCESS != result)                                                                    \
-        {                                                                                              \
-            const char *errMsg; cuGetErrorString(result, &errMsg);                                     \
-            ASSERT(0, "Error when exec " #call " %s-%d code:%d err:%s", __FUNCTION__, __LINE__, result, errMsg); \
-        }                                                                                              \
-    }
+         CUresult result = (call);                                                                      \
+         if (CUDA_SUCCESS != result)                                                                    \
+         {                                                                                              \
+             const char *errMsg; cuGetErrorString(result, &errMsg);                                     \
+             ASSERT(0, "Error when exec " #call " %s-%d code:%d err:%s", __FUNCTION__, __LINE__, result, errMsg); \
+         }                                                                                              \
+     }
 
 
 #define DRV_CALL_RET(call, status_val)                                                                   \
@@ -103,87 +108,43 @@ void gmlakeInfoLog(const char* filefunc, int line, const char* format, ...);
 
 static constexpr size_t granularitySize   =  2097152;
 
-void gmlakeInfoInit() {
-    pthread_mutex_lock(&gmlakeInfoLock);
-    if (gmlakeInfoLevel != -1) {pthread_mutex_unlock(&gmlakeInfoLock); return;}
-    const char* gmlake_info = getenv("GMLAKE_INFO");
-    if (gmlake_info == NULL) {
-        gmlakeInfoLevel = GMLAKE_LOG_NONE;
-    } else if (strcasecmp(gmlake_info, "INFO") == 0) {
-        gmlakeInfoLevel = GMLAKE_LOG_INFO;
-    }
-}
-
-void getHostName(char* hostname, int maxlen, const char delim) {
-    if (gethostname(hostname, maxlen) != 0) {
-        strncpy(hostname, "unknown", maxlen);
-        return;
-    }
-    int i = 0;
-    while ((hostname[i] != delim) && (hostname[i] != '\0') && (i < maxlen - 1)) i++;
-    hostname[i] = '\0';
-    return; 
-}
-
-void gmlakeInfoLog(const char* filefunc, int line, const char* fmt, ...) {
-    if (gmlakeInfoLevel == -1) gmlakeInfoInit();
-    if (gmlakeInfoLevel == GMLAKE_LOG_NONE) return;
-
-    char hostname[1024];
-    getHostName(hostname, 1024, '.');
-    int cudaDev;
-    cudaGetDevice(&cudaDev);
-    int pid = getpid();
-    int tid = gettid();
-
-    char buffer[1024];
-    size_t len = 0;
-    len = snprintf(buffer, sizeof(buffer), "%s:%d:%d [%d] GMLAKE_INFO %s():%d", hostname, pid, tid, cudaDev, filefunc, line);
-    if (len) {
-        va_list vargs;
-        va_start(vargs, fmt);
-        (void) vsnprintf(buffer+len, sizeof(buffer)-len, fmt, vargs);
-        va_end(vargs);
-        fprintf(gmlakeInfoFile, "%s\n", buffer);
-        fflush(gmlakeInfoFile);
-    }
-
-}
 
 size_t getGranularitySize()
 {
-    static size_t granularity = -1;
+  static size_t granularity = -1;
   
-    if(granularity == -1) {
-        int current_device;
-        DRV_CALL(cuCtxGetDevice(&current_device));
+  if(granularity == -1)
+  {
+      int current_device;
+      DRV_CALL(cuCtxGetDevice(&current_device));
       
-        CUmemAllocationProp prop = {};
-        prop.type = CU_MEM_ALLOCATION_TYPE_PINNED;
-        prop.location.type = CU_MEM_LOCATION_TYPE_DEVICE;
-        prop.location.id = current_device;
+      CUmemAllocationProp prop = {};
+      prop.type = CU_MEM_ALLOCATION_TYPE_PINNED;
+      prop.location.type = CU_MEM_LOCATION_TYPE_DEVICE;
+      prop.location.id = current_device;
       
-        DRV_CALL(cuMemGetAllocationGranularity(&granularity, &prop, CU_MEM_ALLOC_GRANULARITY_MINIMUM));
-    }
+      DRV_CALL(cuMemGetAllocationGranularity(&granularity, &prop, CU_MEM_ALLOC_GRANULARITY_MINIMUM));
+  }
 
-    return granularity;
+  return granularity;
 }
 
 
 
 CUresult setMemAccess(void* ptr, size_t size, int current_device_in = -1)
 {
-    int current_device = current_device_in;
-    if(current_device == -1) {
-        DRV_CALL(cuCtxGetDevice(&current_device));
-    }
+  int current_device = current_device_in;
+  if(current_device == -1)
+  {
+      DRV_CALL(cuCtxGetDevice(&current_device));
+  }
 
-    CUmemAccessDesc accessDesc = {};
-    accessDesc.location.type = CU_MEM_LOCATION_TYPE_DEVICE;
-    accessDesc.location.id = current_device;
-    accessDesc.flags = CU_MEM_ACCESS_FLAGS_PROT_READWRITE;
-    CUresult result = cuMemSetAccess((CUdeviceptr)ptr, size, &accessDesc, 1); 
-    return result;
+  CUmemAccessDesc accessDesc = {};
+  accessDesc.location.type = CU_MEM_LOCATION_TYPE_DEVICE;
+  accessDesc.location.id = current_device;
+  accessDesc.flags = CU_MEM_ACCESS_FLAGS_PROT_READWRITE;
+  CUresult result = cuMemSetAccess((CUdeviceptr)ptr, size, &accessDesc, 1); 
+  return result;
 }
 
 
@@ -193,11 +154,9 @@ namespace c10
     {
         namespace CUDACachingAllocator
         {
-            namespace Native
-            {   namespace
-                {
-			        struct Block;
-                }
+            namespace
+            {
+                struct Block;
             }
         }
     }
@@ -207,9 +166,9 @@ namespace c10
 struct BlockSegment
 {
     BlockSegment():block(nullptr), offset(0) {}
-    BlockSegment(c10::cuda::CUDACachingAllocator::Native::Block* block, size_t offset):block(block), offset(offset) {}
+    BlockSegment(c10::cuda::CUDACachingAllocator::Block* block, size_t offset):block(block), offset(offset) {}
     
-    c10::cuda::CUDACachingAllocator::Native::Block* block;
+    c10::cuda::CUDACachingAllocator::Block* block;
     size_t offset;
 };
 
@@ -261,68 +220,82 @@ struct PhyBlock
     
     bool free;
     cudaStream_t owner_stream;
-    std::vector<BlockSegment> mapped_blocks;
+    std::vector<BlockSegment> mappped_blocks;
     bool released;
 };
 
 
 
-struct VirDevPtr {
-    VirDevPtr(CUdeviceptr addr_in, size_t allocSize_in, int device_id = -1): allocSize(allocSize_in), mapped(false), device_id(device_id), status(CUDA_SUCCESS), released(false) {
-        if(device_id == -1) {
-            DRV_CALL(cuCtxGetDevice(&device_id));
-        }
+struct VirDevPtr
+{
+  VirDevPtr(CUdeviceptr addr_in, size_t allocSize_in, int device_id = -1): allocSize(allocSize_in), mapped(false), device_id(device_id), status(CUDA_SUCCESS), released(false)
+  {
+     if(device_id == -1)
+     {
+       DRV_CALL(cuCtxGetDevice(&device_id));
+     }
       
-        CUdeviceptr device_ptr;
-        CUdeviceptr request_ptr = addr_in;
+      CUdeviceptr device_ptr;
+      CUdeviceptr request_ptr = addr_in;
       
-        DRV_CALL_RET(cuMemAddressReserve(&device_ptr, allocSize, 0ULL, request_ptr, 0ULL), status);
+      DRV_CALL_RET(cuMemAddressReserve(&device_ptr, allocSize, 0ULL, request_ptr, 0ULL), status);
       
-        if(status != CUDA_SUCCESS || (request_ptr != 0ULL && device_ptr != request_ptr)) {
-            GMLAKE_INFO(" request_ptr: %p, device_ptr: %p", (void*)request_ptr, (void*)device_ptr);
+      if(status != CUDA_SUCCESS || (request_ptr != 0ULL && device_ptr != request_ptr) )
+      {
+          printf("VirDevPtr::VirDevPtr() request_ptr: %p, device_ptr: %p\n", (void*)request_ptr, (void*)device_ptr);
           
-            if(device_ptr != 0ULL) {
-                (void)cuMemAddressFree(device_ptr, allocSize);
-            }
+          if(device_ptr != 0ULL) 
+          {
+            (void)cuMemAddressFree(device_ptr, allocSize);
+          }
           
-            virAddr = nullptr;
+          virAddr = nullptr;
           
-            if(status == CUDA_SUCCESS) {
-                status = CUDA_ERROR_UNKNOWN;
-            }
+          if(status == CUDA_SUCCESS)
+          {
+              status = CUDA_ERROR_UNKNOWN;
+          }
           
-            return;
-        }
+          return;
+      }
       
-        virAddr = (void*)device_ptr;
-    }
+      virAddr = (void*)device_ptr;
+  }
 
-    void release_resources() {
+  void release_resources()
+  {
+      //printf("VirDevPtr::release_resources() release_resources call virAddr %p of size %luMB\n", virAddr, allocSize/(1024*1024));
       
-        if(virAddr) {
-            if(mapped) {
-                DRV_CALL(cuMemUnmap((CUdeviceptr)virAddr, allocSize));
-            }
-            DRV_CALL(cuMemAddressFree((CUdeviceptr)virAddr, allocSize)); 
-        }
+      if(virAddr)
+      {
+          if(mapped)
+          {
+              //printf("VirDevPtr::release_resources() cuMemUnmap virAddr %p of size %luMB\n", virAddr, allocSize/(1024*1024));
+              DRV_CALL(cuMemUnmap((CUdeviceptr)virAddr, allocSize));
+          }
+          //printf("VirDevPtr::release_resources() cuMemAddressFree virAddr %p of size %luMB\n", virAddr, allocSize/(1024*1024));
+          DRV_CALL(cuMemAddressFree((CUdeviceptr)virAddr, allocSize)); 
+      }
       
-        released = true;
-    }
+      released = true;
+  }
   
-    ~VirDevPtr() {
-        if(!released) {
-            this->release_resources();
-            released = true;
-        }
-    }
+  ~VirDevPtr()
+  {
+      if(!released)
+      {
+          this->release_resources();
+          released = true;
+      }
+  }
 
 
-    void* virAddr;
-    const size_t allocSize;
-    bool mapped;
-    int device_id;
-    CUresult status;
-    bool released;
+  void* virAddr;
+  const size_t allocSize;
+  bool mapped;
+  int device_id;
+  CUresult status;
+  bool released;
 };
 
 
@@ -338,8 +311,10 @@ struct VirBlock
                                  phy_block(phy_block_in),
                                  device_id(device_id),
                                  status(CUDA_SUCCESS),
-                                 released(false) {
-        if(device_id == -1) {
+                                 released(false)
+    {
+        if(device_id == -1)
+        {
           DRV_CALL(cuCtxGetDevice(&device_id));
         }
         
@@ -347,25 +322,30 @@ struct VirBlock
         
         CUdeviceptr device_ptr = (CUdeviceptr)block_ptr;
         
+        //printf("map addr %p offset %lu to %p, to handle of size: %f...\n", (void*)vir_dev_ptr->virAddr, offset/blockSize, block_ptr, blockSize/(1024.f*1024.f));
         
         DRV_CALL_RET(cuMemMap(device_ptr, blockSize, 0ULL, phy_block->alloc_handle, 0ULL), status);
         DRV_CALL_RET(setMemAccess((void*)device_ptr, blockSize, device_id), status);
         
-        if(offset == 0) {
+        if(offset == 0)
+        {
             vir_dev_ptr->mapped = true;
         }
     }
 
-    void release_resources() {
+    void release_resources()
+    {
         vir_dev_ptr.reset();
         released = true;
     }
     
-    ~VirBlock() {
-        if(!released) {
-            this->release_resources();
-            released = true;
-        }
+    ~VirBlock()
+    {
+      if(!released)
+      {
+          this->release_resources();
+          released = true;
+      }
     }
     
     std::shared_ptr<VirDevPtr> vir_dev_ptr;
@@ -382,7 +362,8 @@ struct VirBlock
 };
 
 
-struct VmmSegment {
+struct VmmSegment
+{
     VmmSegment():granul_size(0), segment_ptr(nullptr), status(CUDA_SUCCESS), free_blocks(0), released(false) {}
     
     
@@ -395,14 +376,17 @@ struct VmmSegment {
                                       free_blocks(blocks),
                                       used_blocks(0),
                                       fused(false),
-                                      released(false) {
-        if(device_id == -1) {
+                                      released(false)
+    {
+        if(device_id == -1)
+        {
           DRV_CALL(cuCtxGetDevice(&device_id));
         }
         
         allocate_phy_blocks(blocks, block_size_in, device_id);
        
-        if(status == CUDA_SUCCESS) {
+        if(status == CUDA_SUCCESS)
+        {
             mapVirAddr();
         }
     }
@@ -415,7 +399,8 @@ struct VmmSegment {
                                                                           free_blocks(phy_blocks.size()),
                                                                           used_blocks(0),
                                                                           fused(true),
-                                                                          released(false) {
+                                                                          released(false)
+    {
         mapVirAddr();
     }
     
@@ -434,18 +419,25 @@ struct VmmSegment {
                                                                         {}
 
     
-    void allocate_phy_blocks(size_t blocks, size_t block_size_in, int device_id_in) {
+    void allocate_phy_blocks(size_t blocks, size_t block_size_in, int device_id_in)
+    {
+        //static const size_t device_granul_size = getGranularitySize();
+        //if(device_granul_size != block_size_in)
+        //{
+        //    printf("warning: device_granul_size %fMB does not match block_size_in %fMB\n", device_granul_size/(1024.f*1024.f), block_size_in/(1024.f*1024.f));
+        //}
         
         phy_blocks.reserve(blocks);
         for(size_t i=0; i<blocks; i++)
         {
             auto phy_block = std::make_shared<PhyBlock>(device_id_in, block_size_in);
-            if(phy_block->status != CUDA_SUCCESS) {
+            if(phy_block->status != CUDA_SUCCESS)
+            {
                 size_t device_free;
                 size_t device_total;
                 cudaMemGetInfo(&device_free, &device_total);
                 
-                GMLAKE_INFO(" allocate memory handle for %luth phy_block failed, current memory info: device_total: %luMB, device_free: %luMB, request size: %luMB, already allocate: %luMB",
+                printf("VmmSegment::allocate_phy_blocks, allocate memory handle for %luth phy_block failed, current memory info: device_total: %luMB, device_free: %luMB, request size: %luMB, already allocate: %luMB\n",
                                              i, device_total/(1024*1024), device_free/(1024*1024), (blocks*block_size_in)/(1024*1024), ((i+1)*block_size_in)/(1024*1024));
       
                 
@@ -453,33 +445,49 @@ struct VmmSegment {
                 phy_blocks.clear();
                 cudaGetLastError();
                 break;
-            } else {
+            }
+            else
+            {
                 phy_blocks.emplace_back(std::move(phy_block));
             }
         }
         
+        //if(phy_blocks.size() == blocks)
+        //{
+        //    printf("allocate %lu memory handles succeeded\n", blocks);
+        //}
     }
     
     
-    void release_resources() {
+    void release_resources()
+    {
+        //if(vir_blocks.size())
+        //{
+        //    printf("VmmSegment::release_resources(): vir_blocks vir_dev_ptr use_count %lu, vir_blocks.size() %lu\n", vir_blocks[0]->vir_dev_ptr.use_count(), vir_blocks.size());
+        //}
         
         {
-            auto tmp_vir = std::move(vir_blocks);
-            auto tmp_phy = std::move(phy_blocks);
+            auto tmp = std::move(vir_blocks);
+        }
+        {
+            auto tmp = std::move(phy_blocks);
         }
         released = true;
     }
     
     virtual ~VmmSegment()
     {
+      //printf("VmmSegment::~VmmSegment(): vir_blocks.size() %lu\n", vir_blocks.size());
       
-        if(!released) {
-            this->release_resources();
-            released = true;
-        }
+      if(!released)
+      {
+          this->release_resources();
+          released = true;
+      }
     }
     
-    void* mapVirAddr() {
+    void* mapVirAddr()
+    {
         static constexpr int retry_times = 8;
         static std::mutex alloc_mutex;
 
@@ -498,44 +506,59 @@ struct VmmSegment {
             
             device_ptr = (CUdeviceptr)vir_dev_ptr->virAddr;
             
-            if(vir_dev_ptr->status != CUDA_SUCCESS || !vir_dev_ptr->virAddr) {
-                GMLAKE_INFO(" reserve memory of size %fMB failed", segment_size/(1024.f*1024.f));
+            if(vir_dev_ptr->status != CUDA_SUCCESS || !vir_dev_ptr->virAddr)
+            {
+                printf("VmmSegment::mapVirAddr() reserve memory of size %fMB failed!\n", segment_size/(1024.f*1024.f));
                 
                 result = vir_dev_ptr->status;
-            } else {
+            }
+            else
+            {
+                //printf("VmmSegment::mapVirAddr() reserve whole memory %p of size %fMB succeeded!\n", (void*)device_ptr, segment_size/(1024.f*1024.f));
                                 
                 vir_blocks.clear();
                 
                 size_t offset = 0;
-                for(size_t j = 0; j < phy_blocks.size(); j++) {
+                for(size_t j = 0; j < phy_blocks.size(); j++)
+                {
                     auto phy_block = phy_blocks[j];
                    
                     auto vir_block = std::make_shared<VirBlock>(vir_dev_ptr, offset, granul_size, phy_block, device_id);
                     
-                    if(vir_block->status != CUDA_SUCCESS) {
+                    if(vir_block->status != CUDA_SUCCESS)
+                    {
                         result = vir_block->status;
                         vir_blocks.clear();
                         cudaGetLastError();
-                        GMLAKE_INFO(" map memory %p of size %fMB for the %luth phy_block failed", vir_block->block_ptr, granul_size/(1024.f*1024.f), j);
+                        printf("VmmSegment::mapVirAddr() map memory %p of size %fMB for the %luth phy_block failed!\n", vir_block->block_ptr, granul_size/(1024.f*1024.f), j);
                         break;
-                    } else {
+                    }
+                    else
+                    {
+                        //printf("VmmSegment::mapVirAddr() map memory %p of size %fMB for the %luth phy_block succeed!\n", vir_block->block_ptr, granul_size/(1024.f*1024.f), j);
                         vir_blocks.emplace_back(std::move(vir_block));
                     }
                     
                     offset += granul_size;
                 }
                 
+                //if(vir_blocks.size() == phy_blocks.size())
+                //{
+                //    printf("VmmSegment::mapVirAddr() reserve whole memory %p of size %fMB succeeded!\n", (void*)device_ptr, segment_size/(1024.f*1024.f));
+                //}
             }
             
             current_try++;
             device_ptr = 0ULL;
-        } while(result != CUDA_SUCCESS && current_try < retry_times);    
+        }
+        while(result != CUDA_SUCCESS && current_try < retry_times);    
         
         
         status = result;
         
         
-        if(result == CUDA_SUCCESS) {
+        if(result == CUDA_SUCCESS)
+        {
             segment_ptr = vir_blocks[0]->block_ptr;
             return segment_ptr;
         }
@@ -547,9 +570,11 @@ struct VmmSegment {
     
     
     
-    std::shared_ptr<VmmSegment> split(size_t keep_size) {
-        if(keep_size%granul_size) {
-            GMLAKE_INFO(" keep_size %fMB is not multiple of granul_size %fMB", keep_size/(1024.f*1024.f), granul_size/(1024.f*1024.f));
+    std::shared_ptr<VmmSegment> split(size_t keep_size)
+    {
+        if(keep_size%granul_size)
+        {
+            printf("keep_size %fMB is not multiple of granul_size %fMB!!!!\n", keep_size/(1024.f*1024.f), granul_size/(1024.f*1024.f));
             gtrace();
             exit(-1);
         }
@@ -557,19 +582,27 @@ struct VmmSegment {
         size_t keep_blocks = keep_size/granul_size;
         
         
-        if(keep_blocks >= vir_blocks.size()) {
-            GMLAKE_INFO(" keep_blocks %lu is larger than remaing blocks %lu", keep_blocks, vir_blocks.size());
+        if(keep_blocks >= vir_blocks.size())
+        {
+            printf("keep_blocks %lu is larger than remaing blocks %lu!!!!\n", keep_blocks, vir_blocks.size());
             gtrace();
             exit(-1);
         }
+        
+        
+        
+        //printf("VmmSegment::split() original phy_blocks size: %lu, keep_blocks: %lu\n", phy_blocks.size(), keep_blocks);
+        //printf("VmmSegment::split() original vir_blocks size: %lu, keep_blocks: %lu\n", vir_blocks.size(), keep_blocks);
 
         
         std::vector<std::shared_ptr<PhyBlock>> remain_phy_blocks;
         std::vector<std::shared_ptr<VirBlock>> remain_vir_blocks;
         
         size_t remaining_free_blocks = 0;
-        for(size_t i=keep_blocks; i<phy_blocks.size(); i++) {
-            if(phy_blocks[i]->free) {
+        for(size_t i=keep_blocks; i<phy_blocks.size(); i++)
+        {
+            if(phy_blocks[i]->free)
+            {
                 remaining_free_blocks++;
             }
             
@@ -591,26 +624,35 @@ struct VmmSegment {
     }
     
     
-    bool remerge(VmmSegment& segment) {
-        if( segment.segment_ptr ==  (void*) ( (char*)this->segment_ptr + this->phy_blocks.size()*granul_size) ) {
-           for(size_t i=0; i< segment.phy_blocks.size(); i++) {
+    bool remerge(VmmSegment& segment)
+    {
+        if( segment.segment_ptr ==  (void*) ( (char*)this->segment_ptr + this->phy_blocks.size()*granul_size) )
+        {
+           for(size_t i=0; i< segment.phy_blocks.size(); i++)
+           {
                this->phy_blocks.emplace_back(std::move(segment.phy_blocks[i]));
                this->vir_blocks.emplace_back(std::move(segment.vir_blocks[i]));
            }
-        } else if( this->segment_ptr == (void*) ( (char*)segment.segment_ptr + segment.phy_blocks.size()*granul_size) ) {
-           for(size_t i=0; i< phy_blocks.size(); i++) {
+        }
+        else if( this->segment_ptr == (void*) ( (char*)segment.segment_ptr + segment.phy_blocks.size()*granul_size) )
+        {
+           for(size_t i=0; i< phy_blocks.size(); i++)
+           {
                segment.phy_blocks.emplace_back(std::move(this->phy_blocks[i]));
                segment.vir_blocks.emplace_back(std::move(this->vir_blocks[i]));
-            }
+           }
            
            this->phy_blocks = std::move(segment.phy_blocks);
            this->vir_blocks = std::move(segment.vir_blocks);
            
            this->segment_ptr = segment.segment_ptr;
-        } else {
-            GMLAKE_INFO(" segment of ptr %p size %fMB is not head or tail of segment ptr %p size %fMB", 
+        }
+        else
+        {
+            printf("segment of ptr %p size %fMB is not head or tail of segment ptr %p size %fMB!!!!\n", 
                                                                       segment.segment_ptr, segment.vir_blocks.size()*granul_size/(1024.f*1024.f),
                                                                       this->segment_ptr, this->vir_blocks.size()*granul_size/(1024.f*1024.f));
+            gtrace();
             exit(-1);
             
            return false;
@@ -619,6 +661,7 @@ struct VmmSegment {
         
         this->free_blocks += segment.free_blocks;
         segment.free_blocks = 0;
+        
         
         segment.phy_blocks.clear();
         segment.vir_blocks.clear();
@@ -641,7 +684,115 @@ struct VmmSegment {
     
     size_t free_blocks;
     size_t used_blocks;
+    //const bool fused;
     bool fused;
     bool released;
 };
 
+
+
+
+
+
+/*
+struct VirBlock : public c10::intrusive_ptr_target
+{
+  VirBlock(CUdeviceptr addr_in, 
+           size_t allocSize_in, 
+           c10::intrusive_ptr<PhyBlock> phy_block_in,
+           bool allocate_vir_addr = true): allocSize(allocSize_in), 
+                                           phy_block(phy_block_in), 
+                                           device_id(phy_block->device_id),
+                                           status(CUDA_SUCCESS)
+  {
+      CUdeviceptr device_ptr = 0ULL;
+      CUdeviceptr request_ptr = addr_in;
+      
+      if(allocate_vir_addr)
+      {
+          DRV_CALL_RET(cuMemAddressReserve(&device_ptr, allocSize, 0, request_ptr, 0ULL), status);
+          
+          if(status != CUDA_SUCCESS || (request_ptr != 0ULL && device_ptr != request_ptr) )
+          {
+              printf("VirBlock::VirBlock() request_ptr: %p, device_ptr: %p\n", (void*)request_ptr, (void*)device_ptr);
+              
+              if(device_ptr != 0ULL) 
+              {
+                (void)cuMemAddressFree(device_ptr, allocSize);
+              }
+              
+              block_ptr = nullptr;
+              
+              if(status == CUDA_SUCCESS)
+              {
+                  status = CUDA_ERROR_UNKNOWN;
+              }
+          
+              return;
+          }
+      }
+      
+      
+      block_ptr = (void*)request_ptr;
+      
+      DRV_CALL_RET(cuMemMap(device_ptr, allocSize, 0ULL, phy_block->alloc_handle, 0ULL), status);
+      DRV_CALL_RET(setMemAccess((void*)device_ptr, allocSize, device_id), status);
+  }
+  
+  
+  VirBlock(CUdeviceptr addr_in, size_t allocSize_in, int device_id = -1): allocSize(allocSize_in), device_id(device_id), status(CUDA_SUCCESS)
+  {
+      CUdeviceptr device_ptr = 0ULL;
+      CUdeviceptr request_ptr = addr_in;
+      
+      DRV_CALL_RET(cuMemAddressReserve(&device_ptr, allocSize, allocSize, request_ptr, 0ULL), status);
+      
+      if(status != CUDA_SUCCESS || (request_ptr != 0ULL && device_ptr != request_ptr) )
+      {
+          if(device_ptr != 0ULL) 
+          {
+            (void)cuMemAddressFree(device_ptr, allocSize);
+          }
+          
+          block_ptr = nullptr;
+          
+          return;
+      }
+      
+      block_ptr = (void*)device_ptr;
+  }
+
+  virtual void release_resources() override
+  {
+      if(block_ptr)
+      {
+          if(phy_block)
+          {
+              DRV_CALL(cuMemUnmap((CUdeviceptr)block_ptr, allocSize));
+          }
+          DRV_CALL(cuMemAddressFree((CUdeviceptr)block_ptr, allocSize)); 
+      }
+  }
+
+  bool map(c10::intrusive_ptr<PhyBlock> phy_block_in)
+  {
+      if(phy_block)
+      {
+          DRV_CALL_RET(cuMemUnmap((CUdeviceptr)block_ptr, allocSize), status);
+      }
+      phy_block = phy_block_in;
+      
+      CUdeviceptr device_ptr = (CUdeviceptr)block_ptr;
+      DRV_CALL_RET(cuMemMap(device_ptr, allocSize, 0ULL, phy_block->alloc_handle, 0ULL), status);
+      DRV_CALL_RET(setMemAccess((void*)device_ptr, allocSize, device_id), status);
+      
+      return status == CUDA_SUCCESS;
+  }
+
+  void* block_ptr;
+  const size_t allocSize;
+  c10::intrusive_ptr<PhyBlock> phy_block;
+  int device_id;
+  CUresult status;
+};
+*/
