@@ -9,7 +9,7 @@ AI large model training and inference are increasingly confronted with the chall
 
 To address these challenges, GLake is an acceleration library and relevant utilites that work at the bottom layer (GPU virtual and physical memory management) and system layer (multi-GPU, multi-path, and multi-tasking) to optimize GPU memory and IO. 
 
-GLake enables AI trainging, inference (including converting large models to TensorRT or ONNX Runtime on NVIDIA A10/3090) and DevOps (like Notebook) to fully utilize the underlying hardware resources, improving training throughput by up to 4 times, saving inference memory by up to 3 times, and accelerating IO transmission by 3~12 times. 
+GLake enables AI training, inference (including converting large models to TensorRT or ONNX Runtime on NVIDIA A10/3090) and DevOps (like Notebook) to fully utilize the underlying hardware resources, improving training throughput by up to 4 times, saving inference memory by up to 3 times, and accelerating IO transmission by 3~12 times. 
 
 To use GLake, the simplest way is to replace the underlying library (e.g., libcuda.so or PyTorch libc10_cuda.so), though more graceful way is to follow the detailed steps.
 
