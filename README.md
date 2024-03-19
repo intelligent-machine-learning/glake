@@ -1,6 +1,7 @@
 ## GLake: optimizing GPU memory management and IO transmission
 [中文](docs/readme_cn.md)
 ## Latest News
+- We have released the version which is compatible with PyTorch-1.13.1. Please check the branch torch-1.13.1. And we also provide a whl package.
 - [2023.11.10] Our paper: [GMLake: Efficient and Transparent GPU Memory Defragmentation for Large-scale DNN Training with Virtual Memory Stitching](https://arxiv.org/abs/2401.08156), just accepted by **ASPLOS24**
 - [Blog](docs/readme_cn.md)
 
