@@ -1,8 +1,8 @@
 ## GLake: Optimizing GPU memory management & IO transmission
 [中文](docs/readme_cn.md)
 ## Latest News
-- [2024.05] Preview: **serverless** feature with on-demand GPU memory shink (ckpt to CPU while), keeping process alive and auto backfill upon request coming
-- [2024.04] Preview: optimizing **LLM KV cache** with different approach than PagedAttention, much flexible and easy-to-adopt, will be publichsed soon 
+- [2024.05] Preview: **serverless** with on-demand GPU memory shink (ckpt to CPU while), keeping process alive and auto backfill upon request coming
+- [2024.04] Preview: optimizing **LLM KV cache**, different than PagedAttention, flexible and easy-to-adopt 
 - [2024.04] Preview: **cross-stream** GPU memory optimization dev done, will be released soon;  integration with PyTorch expand segment is in-progress by AntGroup and Alibaba contributor
 - [2024.03] compatible with PyTorch-1.13.1 at branch torch-1.13.1, also with a whl package
 - [2023.11.10] Our paper: [GMLake: Efficient and Transparent GPU Memory Defragmentation for Large-scale DNN Training with Virtual Memory Stitching](https://arxiv.org/abs/2401.08156), just accepted by **ASPLOS24**
