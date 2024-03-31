@@ -1,7 +1,11 @@
 # GLake：GPU显存与传输优化
 
 ## 最新消息
-- 论文 GMLake: Efficient and Transparent GPU Memory Defragmentation for Large-scale DNN Training with Virtual Memory Stitching, 已被 **ASPLOS24** 接收，全文即将公布
+- 【2024.5】预告：serverless：根据负载自动shrink显存（ckpt到CPU），进程保活，请求到达时自动数据回填。
+- 【2024.4】预览：优化大模型KV cache管理（不同于PagedAttention）开发完成 
+- 【2024.4】预览：跨stream的显存优化即将发布；与PyTorch ExpandSegment集成进行中（与Aliababa贡献者合作） 
+- 【2024.3】提供兼容 PyTorch-1.13.1版本，branch torch-1.13.1
+- 【2024.1】GMLake: Efficient and Transparent GPU Memory Defragmentation for Large-scale DNN Training with Virtual Memory Stitching, 已被 **ASPLOS24** 接收，URL: https://arxiv.org/abs/2401.08156
 
 ## 简介
 AI大模型训练与推理面临越来越严重的“显存墙”与“传输墙”问题，即显存容量与传输带宽赶不上模型大小增长速度，亟需更多优化方案。
