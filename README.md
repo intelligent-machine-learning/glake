@@ -77,9 +77,7 @@ We are working on a few interesting featues. Any questions, suggestions and part
 - **more scenarios**: such as GNN、GraphDB etc
 
 ## Community
-WeChat: TBD
+WeChat-Group: in case of invalid, pls contact wx: 13051161982
 <div align="left">
-<img src="docs/figures/gmlake-wechat.jpg" alt="Editor" width="500">
+<img src="docs/figures/gmlake-wechat.png" alt="Editor" width="500">
 </div>
-
-Dingding: TBD
