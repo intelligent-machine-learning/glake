@@ -2,7 +2,7 @@
 
 ## 最新消息
 - 【2024.5】预告：serverless：根据负载**自动shrink显存**（ckpt到CPU），进程保活，请求达到时自动数据回填。
-- 【2024.4】预览：优化 **大模型KV cache **管理开发完成，一种不同于PagedAttention的更灵活、高效的方式。 
+- 【2024.4】预览：优化 **大模型推理KV cache** 管理开发完成，一种不同于PagedAttention的更灵活、高效的方式。 
 - 【2024.4】预览：**跨stream**的显存优化即将发布；与PyTorch ExpandSegment集成进行中（与Aliababa贡献者合作） 
 - 【2024.3】提供兼容 PyTorch-1.13.1版本，branch torch-1.13.1
 - 【2024.1】GMLake: Efficient and Transparent GPU Memory Defragmentation for Large-scale DNN Training with Virtual Memory Stitching, 已被 **ASPLOS24** 接收，URL: https://arxiv.org/abs/2401.08156
