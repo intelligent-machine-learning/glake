@@ -74,6 +74,9 @@ GLake总体架构如下图所示，基于分层设计（当前主要是基于PyT
 
 
 ## 交流群
-微信: TBD
+微信群(7天有效期): 如果过期，请联系WX: 13051161982
 
-钉钉群: TBD
+<div align="left">
+<img src="docs/figures/gmlake-wechat.png" alt="Editor" width="500">
+</div>
+
