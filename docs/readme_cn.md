@@ -1,6 +1,7 @@
 # GLake：GPU显存与传输优化
 
 ## 最新消息
+- 【2024.5】ASPLOS24会议上分享的slides可以访问[链接](https://docs.google.com/presentation/d/1ZM7OfvOMc5zZ2oIGJONhs_gFqsMLjTogNtD0I59TNfE/edit#slide=id.p1)
 - 【2024.5】预告：serverless：根据负载**自动shrink显存**（ckpt到CPU），进程保活，请求达到时自动数据回填。
 - 【2024.4】预览：优化 **大模型推理KV cache** 管理开发完成，一种不同于PagedAttention的更灵活、高效的方式。 
 - 【2024.4】预览：**跨stream**的显存优化即将发布；与PyTorch ExpandSegment集成进行中（与Aliababa贡献者合作） 
