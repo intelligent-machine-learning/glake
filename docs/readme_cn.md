@@ -1,6 +1,7 @@
 # GLake：GPU显存与传输优化
 
 ## 最新消息
+- 【2024.7】发布GlakeServe，一种基于GPU虚拟内存管理方式的大语言模型KV Cache管理与推理服务系统
 - 【2024.5】AICon-2024 (北京，2024.5)大会上GLake overview & recent update 演讲材料 [下载](https://github.com/intelligent-machine-learning/glake/blob/main/docs/%E8%9A%82%E8%9A%81-GLake%E6%98%BE%E5%AD%98%E4%B8%8E%E4%BC%A0%E8%BE%93%E4%BC%98%E5%8C%96-AIConf-V1.0.pdf)
 - 【2024.5】ASPLOS24会议上分享的slides可以访问[链接](https://docs.google.com/presentation/d/1ZM7OfvOMc5zZ2oIGJONhs_gFqsMLjTogNtD0I59TNfE/edit#slide=id.p1)
 - 【2024.5】预告：serverless：根据负载**自动shrink显存**（ckpt到CPU），进程保活，请求达到时自动数据回填。
