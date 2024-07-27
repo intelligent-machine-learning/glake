@@ -1,8 +1,9 @@
 ## GLake: Optimizing GPU memory management & IO transmission
 [中文](docs/readme_cn.md)
 ## Latest News
-- [2024.05] GLake overview and recent update presentation on AICon 2024 (in Chinese, Beijing, 2024-05-17) [here](https://github.com/intelligent-machine-learning/glake/blob/main/docs/%E8%9A%82%E8%9A%81-GLake%E6%98%BE%E5%AD%98%E4%B8%8E%E4%BC%A0%E8%BE%93%E4%BC%98%E5%8C%96-AIConf-V1.0.pdf)
-- [2024.05] The presentation slides in ASPLOS24 can be found [here](https://docs.google.com/presentation/d/1ZM7OfvOMc5zZ2oIGJONhs_gFqsMLjTogNtD0I59TNfE/edit#slide=id.p1)
+- [2024.07] We release vTensor, our LLM serving and KV Cache management system using VMM technique.
+- [2024.05] GLake overview and recent update is presented on AICon 2024 (in Beijing, China, 2024-05-17) [here](https://github.com/intelligent-machine-learning/glake/blob/main/docs/%E8%9A%82%E8%9A%81-GLake%E6%98%BE%E5%AD%98%E4%B8%8E%E4%BC%A0%E8%BE%93%E4%BC%98%E5%8C%96-AIConf-V1.0.pdf)
+- [2024.05] The presentation slides in ASPLOS'24 can be found [here](https://docs.google.com/presentation/d/1ZM7OfvOMc5zZ2oIGJONhs_gFqsMLjTogNtD0I59TNfE/edit#slide=id.p1)
 - [2024.05] Preview: **serverless** with on-demand GPU memory shink (ckpt to CPU while), keeping process alive and auto backfill upon request coming
 - [2024.04] Preview: optimizing **LLM KV cache**, different than PagedAttention, flexible and easy-to-adopt 
 - [2024.04] Preview: **cross-stream** GPU memory optimization dev done, will be released soon;  integration with PyTorch expand segment is in-progress by AntGroup and Alibaba contributor
