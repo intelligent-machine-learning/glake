@@ -31,7 +31,7 @@ git clone https://github.com/intelligent-machine-learning/glake-flash-attn.git
 cd glake-flash-attn
 python setup.py install
 cd ../
-find . -type f -exec sed -i 's/\/root\/glake-vllm-open\/vmmAllocator/\/<your_path_to_glake_binary>/g' {} +
+find . -type f -exec sed -i 's/\/root\/glake-vllm-open\/vmm_allocator/\/<your_path_to_glake_binary>/g' {} +
 python setup.py install # build GlakeServe
 ```
 
